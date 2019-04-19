@@ -1,4 +1,5 @@
 .\objects\bsp_i2c.o: User\i2c\bsp_i2c.c
+.\objects\bsp_i2c.o: .\User\./i2c/bsp_i2c.h
 .\objects\bsp_i2c.o: .\Libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x\stm32f10x.h
 .\objects\bsp_i2c.o: .\Libraries\CMSIS\CM3\CoreSupport\core_cm3.h
 .\objects\bsp_i2c.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
@@ -28,5 +29,6 @@
 .\objects\bsp_i2c.o: .\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_usart.h
 .\objects\bsp_i2c.o: .\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_wwdg.h
 .\objects\bsp_i2c.o: .\Libraries\STM32F10x_StdPeriph_Driver\inc\misc.h
-.\objects\bsp_i2c.o: .\User\./i2c/bsp_i2c.h
-.\objects\bsp_i2c.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\inttypes.h
+.\objects\bsp_i2c.o: .\User\./usart/bsp_usart.h
+.\objects\bsp_i2c.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\bsp_i2c.o: .\User\./systick/bsp_SysTick.h

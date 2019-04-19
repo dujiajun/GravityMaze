@@ -9,7 +9,7 @@
   ******************************************************************************
   * @attention
   *
-  * 实验平台:野火 iSO STM32 开发板 
+  * 实验平台:秉火 指南者 STM32 开发板 
   * 论坛    :http://www.firebbs.cn
   * 淘宝    :https://fire-stm32.taobao.com
   *
@@ -17,6 +17,11 @@
   */
 //SysTick_Config主要用来配置中端向量，重置STK_VAL寄存器，配置SysTick时钟为AHB 
 #include "./systick/bsp_SysTick.h"
+ 
+
+volatile uint32_t g_ul_ms_ticks=0;
+static volatile uint32_t TimingDelay=0;
+
  
 /**
   * @brief  启动系统滴答定时器 SysTick
@@ -38,4 +43,31 @@ void SysTick_Init(void)
 		// 关闭滴答定时器  
 	SysTick->CTRL &= ~ SysTick_CTRL_ENABLE_Msk;
 }
+
+
+
+void mdelay(unsigned long nTime)
+{
+	TimingDelay = nTime;
+	while(TimingDelay != 0);
+}
+
+int get_tick_count(unsigned long *count)
+{
+        count[0] = g_ul_ms_ticks;
+	return 0;
+}
+
+void TimingDelay_Decrement(void)
+{
+	if (TimingDelay != 0x00)
+		TimingDelay--;
+}
+
+void TimeStamp_Increment(void)
+{
+	g_ul_ms_ticks++;
+}
+
+
 /*********************************************END OF FILE**********************/

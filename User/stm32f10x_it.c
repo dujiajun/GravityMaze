@@ -1,11 +1,11 @@
 /**
   ******************************************************************************
-  * @file    Project/STM32F10x_StdPeriph_Template/stm32f10x_it.c
+  * @file    Project/STM32F10x_StdPeriph_Template/stm32f10x_it.c 
   * @author  MCD Application Team
   * @version V3.5.0
   * @date    08-April-2011
   * @brief   Main Interrupt Service Routines.
-  *          This file provides template for all exceptions handler and
+  *          This file provides template for all exceptions handler and 
   *          peripherals interrupt service routine.
   ******************************************************************************
   * @attention
@@ -13,7 +13,9 @@
   * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
   * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
   * TIME. AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY
-  * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
+  * DIRECT, INDIRECT OR CONSEQUENTI
+  
+  AL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
   * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
   * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
   *
@@ -23,7 +25,15 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x_it.h"
+#include "./exti/bsp_exti.h" 
+#include "./i2c/bsp_i2c.h"
+
 unsigned int Task_Delay[NumOfTask]={0};
+extern void TimingDelay_Decrement(void);
+extern void TimeStamp_Increment(void);
+extern void gyro_data_ready_cb(void);
+
+
 /** @addtogroup STM32F10x_StdPeriph_Template
   * @{
   */
@@ -55,10 +65,11 @@ void NMI_Handler(void)
   */
 void HardFault_Handler(void)
 {
-    /* Go to infinite loop when Hard Fault exception occurs */
-    while (1)
-    {
-    }
+
+  /* Go to infinite loop when Hard Fault exception occurs */
+  while (1)
+  {
+  }
 }
 
 /**
@@ -68,10 +79,10 @@ void HardFault_Handler(void)
   */
 void MemManage_Handler(void)
 {
-    /* Go to infinite loop when Memory Manage exception occurs */
-    while (1)
-    {
-    }
+  /* Go to infinite loop when Memory Manage exception occurs */
+  while (1)
+  {
+  }
 }
 
 /**
@@ -81,10 +92,10 @@ void MemManage_Handler(void)
   */
 void BusFault_Handler(void)
 {
-    /* Go to infinite loop when Bus Fault exception occurs */
-    while (1)
-    {
-    }
+  /* Go to infinite loop when Bus Fault exception occurs */
+  while (1)
+  {
+  }
 }
 
 /**
@@ -94,10 +105,10 @@ void BusFault_Handler(void)
   */
 void UsageFault_Handler(void)
 {
-    /* Go to infinite loop when Usage Fault exception occurs */
-    while (1)
-    {
-    }
+  /* Go to infinite loop when Usage Fault exception occurs */
+  while (1)
+  {
+  }
 }
 
 /**
@@ -134,6 +145,33 @@ void PendSV_Handler(void)
   */
 void SysTick_Handler(void)
 {
+	unsigned char i;
+
+	TimingDelay_Decrement();
+	TimeStamp_Increment();
+	
+	for(i=0;i<NumOfTask;i++)
+	{
+		if(Task_Delay[i])
+		{
+			Task_Delay[i]--;
+		}
+	}
+}
+
+
+
+/// IO 线中断
+void EXTI_INT_FUNCTION (void)
+{
+//	MPU_DEBUG("intterrupt");
+	if(EXTI_GetITStatus(EXTI_LINE) != RESET) //确保是否产生了EXTI Line中断
+	{
+
+		  /* Handle new gyro*/
+		gyro_data_ready_cb();
+		EXTI_ClearITPendingBit(EXTI_LINE);     //清除中断标志位
+	}  
 }
 
 /******************************************************************************/
@@ -154,7 +192,7 @@ void SysTick_Handler(void)
 
 /**
   * @}
-  */
+  */ 
 
 
 /******************* (C) COPYRIGHT 2011 STMicroelectronics *****END OF FILE****/

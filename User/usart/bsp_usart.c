@@ -1,3 +1,20 @@
+/**
+  ******************************************************************************
+  * @file    bsp_usart.c
+  * @version V1.0
+  * @date    2013-xx-xx
+  * @brief   调试用的printf串口，重定向printf到串口
+  ******************************************************************************
+  * @attention
+  *
+  * 实验平台:秉火 F103-指南者 STM32 开发板 
+  * 论坛    :http://www.firebbs.cn
+  * 淘宝    :https://fire-stm32.taobao.com
+  *
+  ******************************************************************************
+  */ 
+
+
 #include "./usart/bsp_usart.h"
 
 
@@ -12,7 +29,7 @@ void USART_Config(void)
 	USART_InitTypeDef USART_InitStructure;
 
 	// 打开串口GPIO的时钟
-	DEBUG_USART_GPIO_APBxClkCmd(DEBUG_USART_GPIO_CLK, ENABLE);
+	DEBUG_USART_GPIO_APBxClkCmd(DEBUG_USART_GPIO_CLK, ENABLE); 
 	
 	// 打开串口外设的时钟
 	DEBUG_USART_APBxClkCmd(DEBUG_USART_CLK, ENABLE);
