@@ -23,8 +23,8 @@
 
 #define WINDOW_WIDTH 240
 #define WINDOW_HEIGHT 320
-#define N 20
-#define M 20
+#define N 29
+#define M 24
 #define ROOM_SIZE 10
 #define WALL_SIZE 2
 struct edge
@@ -100,14 +100,15 @@ int now_y = POINT_SIZE + WALL_SIZE;
 int dx[] = {0, 1, 0, -1}; //ÓÒ¡¢ÏÂ¡¢×ó¡¢ÉÏ
 int dy[] = {1, 0, -1, 0};
 int dir = 0;
-
+int end_x = M*ROOM_SIZE-POINT_SIZE-WALL_SIZE;
+int end_y = N*ROOM_SIZE-POINT_SIZE-WALL_SIZE;
 void draw_map()
 {
 	int clr_x = now_x - POINT_SIZE-1;
 	int clr_y = now_y - POINT_SIZE-1;
 	ILI9341_Draw_Rec_Color(clr_x > 0 ? clr_x : 0, clr_y > 0 ? clr_y : 0, POINT_SIZE * 2+2, POINT_SIZE * 2+2, 0, 0, 0);
 	LCD_SetColors(RED, BLACK);
-	ILI9341_DrawCircle(now_x, now_y, POINT_SIZE / 2, 1);
+	ILI9341_DrawCircle(now_x, now_y, POINT_SIZE/2, 1);
 	for (int i = 0; i < N * 2 + 1; i++)
 	{
 		int dir = (i + 1) & 1;
@@ -122,19 +123,31 @@ void draw_map()
 			}
 		}
 	}
+	ILI9341_Draw_Rec_Color(end_x,end_y, POINT_SIZE, POINT_SIZE, 0, 255, 0);
+	
 }
 int dirs[4][5][5] = {{0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0}, {0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0}, {0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0}, {0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0}};
-#define DIR_SIZE 4
-void show_dir()
+#define DIR_SIZE 3
+void show_dir(int dir)
 {
 	for (int i = 0; i < 5; i++)
 		for (int j = 0; j < 5; j++)
 		{
 			uint8_t c = dirs[dir][i][j] == 1 ? 255 : 0;
-			ILI9341_Draw_Rec_Color(50 + i * DIR_SIZE, 290 + j * DIR_SIZE, DIR_SIZE, DIR_SIZE, c, c, c);
+			ILI9341_Draw_Rec_Color(110 + i * DIR_SIZE, 300 + j * DIR_SIZE, DIR_SIZE, DIR_SIZE, c, c, c);
 		}
 }
 
+void reset()
+{
+	now_x = POINT_SIZE + WALL_SIZE;
+	now_y = POINT_SIZE + WALL_SIZE;
+	dir = 0;
+	ILI9341_Clear(0, 0, 240, 320);
+	maze_init();
+	draw_map();
+	show_dir(dir);
+}
 void move(int dir)
 {
 	if (now_x + dx[dir] >= 0 && now_x + dx[dir] <= WINDOW_WIDTH && now_y + dy[dir] >= 0 && now_y + dy[dir] <= WINDOW_HEIGHT)
@@ -145,8 +158,13 @@ void move(int dir)
 			now_x = now_x + dx[dir];
 			now_y = now_y + dy[dir];
 			draw_map();
-			show_dir();
+			show_dir(dir);
 		}
+	}
+	
+	if((now_x-end_x)*(now_x-end_x)+(now_y-end_y)*(now_y-end_y)<=POINT_SIZE*POINT_SIZE)
+	{
+		reset();
 	}
 }
 
@@ -536,14 +554,14 @@ int main(void)
 	
 	maze_init();
 	draw_map();
-	show_dir();
+	show_dir(dir);
 	
     while (1)
     {
 		if (Key_Scan(KEY1_GPIO_PORT, KEY1_GPIO_PIN) == KEY_ON)
 		{
 			dir = (dir + 1) % 4;
-			show_dir();
+			show_dir(dir);
 		}
 		if (Key_Scan(KEY2_GPIO_PORT, KEY2_GPIO_PIN) == KEY_ON)
 		{
